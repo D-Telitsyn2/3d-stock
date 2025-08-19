@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Production builds
+.next/
+dist/
+build/
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Cache
+.turbo/
+.cache/
+
+# Database
+*.db
+*.sqlite
+
+# Testing
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Expo
+.expo/
+expo-env.d.ts
+
+# Mobile builds
+*.ipa
+*.apk
+*.aab

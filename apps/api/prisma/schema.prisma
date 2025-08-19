@@ -1,0 +1,203 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(cuid())
+  externalId String   @unique // Clerk user ID
+  email      String   @unique
+  firstName  String?
+  lastName   String?
+  role       String   @default("USER") // USER, SELLER, ADMIN
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  sellerAccount SellerAccount?
+  purchases     Purchase[]
+  reviews       Review[]
+  favorites     Favorite[]
+
+  @@map("users")
+}
+
+model SellerAccount {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  stripeAccountId      String?  @unique
+  onboarded            Boolean  @default(false)
+  defaultPayoutCurrency String   @default("EUR")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assets  Asset[]
+  payouts Payout[]
+
+  @@map("seller_accounts")
+}
+
+model Asset {
+  id            String      @id @default(cuid())
+  sellerId      String
+  slug          String      @unique
+  title         String
+  description   String
+  priceCents    Int
+  currency      String      @default("EUR")
+  status        String      @default("DRAFT") // DRAFT, SUBMITTED, PUBLISHED, REJECTED
+  polygonCount  Int?
+  fileSizeBytes Int?
+  previewReady  Boolean     @default(false)
+  coverImageKey String?
+  moderationNote String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  seller        SellerAccount   @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  files         AssetFile[]
+  tags          AssetTag[]
+  purchases     PurchaseItem[]
+  reviews       Review[]
+  favorites     Favorite[]
+
+  @@map("assets")
+}
+
+model AssetFile {
+  id        String        @id @default(cuid())
+  assetId   String
+  kind      String        // MODEL, TEXTURE, DOCUMENT, PREVIEW
+  s3Key     String
+  filename  String
+  mimeType  String
+  sizeBytes Int
+  hash      String?
+  createdAt DateTime      @default(now())
+
+  // Relations
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@map("asset_files")
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+
+  // Relations
+  assets AssetTag[]
+
+  @@map("tags")
+}
+
+model AssetTag {
+  assetId String
+  tagId   String
+
+  // Relations
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  tag   Tag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([assetId, tagId])
+  @@map("asset_tags")
+}
+
+model Purchase {
+  id                    String   @id @default(cuid())
+  buyerId               String
+  stripePaymentIntentId String   @unique
+  totalCents            Int
+  currency              String   @default("EUR")
+  createdAt             DateTime @default(now())
+
+  // Relations
+  buyer User           @relation(fields: [buyerId], references: [id])
+  items PurchaseItem[]
+
+  @@map("purchases")
+}
+
+model PurchaseItem {
+  id            String   @id @default(cuid())
+  purchaseId    String
+  assetId       String
+  license       String   // STANDARD, EXTENDED
+  unitPriceCents Int
+  createdAt     DateTime @default(now())
+
+  // Relations
+  purchase Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  asset    Asset    @relation(fields: [assetId], references: [id])
+
+  @@unique([purchaseId, assetId])
+  @@map("purchase_items")
+}
+
+model Payout {
+  id               String       @id @default(cuid())
+  sellerId         String
+  stripeTransferId String?      @unique
+  amountCents      Int
+  currency         String       @default("EUR")
+  status           String       @default("INITIATED") // INITIATED, PAID, FAILED
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  // Relations
+  seller SellerAccount @relation(fields: [sellerId], references: [id])
+
+  @@map("payouts")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  assetId   String
+  userId    String
+  rating    Int // 1-5
+  text      String?
+  createdAt DateTime @default(now())
+
+  // Relations
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([assetId, userId])
+  @@map("reviews")
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  assetId   String
+  createdAt DateTime @default(now())
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, assetId])
+  @@map("favorites")
+}
+
+model WebhookEvent {
+  id          String    @id @default(cuid())
+  source      String // STRIPE, etc
+  eventType   String
+  payload     String    // JSON as text for SQLite
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@map("webhook_events")
+}
