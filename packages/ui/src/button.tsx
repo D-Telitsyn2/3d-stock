@@ -7,15 +7,15 @@ export interface ButtonProps {
   className?: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  children, 
-  onClick, 
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  onClick,
   variant = 'primary',
-  className 
+  className
 }) => {
   return (
-    <button 
-      onClick={onClick} 
+    <button
+      onClick={onClick}
       className={`px-4 py-2 rounded ${variant === 'primary' ? 'bg-blue-500 text-white' : 'bg-gray-200'} ${className}`}
     >
       {children}
