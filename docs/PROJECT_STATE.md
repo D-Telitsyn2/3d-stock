@@ -2,7 +2,7 @@
 
 **Единственный живой документ** про прогресс и планы. При изменении архитектуры, завершении этапов или сдвиге приоритетов — **редактируй этот файл**, не добавляй новые `STATUS*.md` / отчёты в корень.
 
-_Последнее обновление: 2026-03-21 (auth)_
+_Последнее обновление: 2026-03-21 — Clerk end-to-end проверен_
 
 ---
 
@@ -32,10 +32,9 @@ _Последнее обновление: 2026-03-21 (auth)_
 - [x] Nest: `ConfigModule`, `PrismaModule`, `HealthModule`, глобальный `ValidationPipe`, **Swagger** на `/api/docs`, CORS, корневая HTML-страница и `GET /health.txt`.
 - [x] Публичный каталог API: **`GET /assets`** (только `status = PUBLISHED`, пагинация).
 - [x] Web: главная, **`/catalog`** через `@repo/sdk` (`listAssets`), `dynamic = 'force-dynamic'` для сборки без API.
-- [x] Web **Clerk** (`@clerk/nextjs` 5.x): `ClerkProvider`, **`middleware.ts`**, **`/sign-in`**, **`/sign-up`**, шапка (`UserButton`, вход), **`/account`** — SSR-запрос к API **`GET /users/me`** с session JWT.
+- [x] **Clerk — проверено**: web (`@clerk/nextjs` 5.x): `ClerkProvider`, `middleware`, `/sign-in`, `/sign-up`, шапка, **`/account`** → API **`GET /users/me`** (JWT) → upsert в `users`. API: `ClerkAuthGuard`, `verifyToken`, Swagger **Bearer** (`clerk-jwt`); ключи в `apps/api/.env` и `apps/web/.env.local`.
 - [x] Пакеты: `@repo/schema` (в т.ч. Zod для ответа каталога), `@repo/sdk`, `@repo/ui`, `@repo/config`.
-- [x] Документация в README: env для `apps/api` и `apps/web`, docker для Postgres.
-- [x] **Clerk (частично)**: `ClerkAuthGuard` + `verifyToken`, **`GET /users/me`** — upsert `User` по Clerk id + email из Clerk API; Swagger **Bearer JWT** (`clerk-jwt`). Нужен `CLERK_SECRET_KEY` в `apps/api/.env`.
+- [x] Документация в README: env для `apps/api` и `apps/web`, Paths Clerk, docker для Postgres.
 
 ## Чего нет или заготовки
 
