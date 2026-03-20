@@ -24,6 +24,15 @@ async function bootstrap() {
     .setTitle('3D Stock API')
     .setDescription('3D Stock marketplace API')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Clerk session JWT (`Authorization: Bearer …`)',
+      },
+      'clerk-jwt',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);

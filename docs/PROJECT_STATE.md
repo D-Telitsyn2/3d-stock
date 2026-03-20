@@ -2,7 +2,7 @@
 
 **Единственный живой документ** про прогресс и планы. При изменении архитектуры, завершении этапов или сдвиге приоритетов — **редактируй этот файл**, не добавляй новые `STATUS*.md` / отчёты в корень.
 
-_Последнее обновление: 2026-03-21_
+_Последнее обновление: 2026-03-21 (auth)_
 
 ---
 
@@ -29,27 +29,31 @@ _Последнее обновление: 2026-03-21_
 
 - [x] Монорепо и workspace (`apps/*`, `packages/*`).
 - [x] Prisma-схема под маркетплейс; **PostgreSQL**; миграция `20250321120000_init`; сид `prisma/seed.ts` (продавец + опубликованные ассеты).
-- [x] Nest: `ConfigModule`, `PrismaModule`, `HealthModule`, глобальный `ValidationPipe`, **Swagger** на `/api/docs`, CORS.
+- [x] Nest: `ConfigModule`, `PrismaModule`, `HealthModule`, глобальный `ValidationPipe`, **Swagger** на `/api/docs`, CORS, корневая HTML-страница и `GET /health.txt`.
 - [x] Публичный каталог API: **`GET /assets`** (только `status = PUBLISHED`, пагинация).
 - [x] Web: главная, **`/catalog`** через `@repo/sdk` (`listAssets`), `dynamic = 'force-dynamic'` для сборки без API.
+- [x] Web **Clerk** (`@clerk/nextjs` 5.x): `ClerkProvider`, **`middleware.ts`**, **`/sign-in`**, **`/sign-up`**, шапка (`UserButton`, вход), **`/account`** — SSR-запрос к API **`GET /users/me`** с session JWT.
 - [x] Пакеты: `@repo/schema` (в т.ч. Zod для ответа каталога), `@repo/sdk`, `@repo/ui`, `@repo/config`.
 - [x] Документация в README: env для `apps/api` и `apps/web`, docker для Postgres.
+- [x] **Clerk (частично)**: `ClerkAuthGuard` + `verifyToken`, **`GET /users/me`** — upsert `User` по Clerk id + email из Clerk API; Swagger **Bearer JWT** (`clerk-jwt`). Нужен `CLERK_SECRET_KEY` в `apps/api/.env`.
 
 ## Чего нет или заготовки
 
-- [ ] **Clerk** (или иной auth): guard, webhook, синхронизация `User` по `externalId`.
-- [ ] Модули `AuthModule` / `UsersModule` — пустые, не подключены к `AppModule`.
+- [ ] Clerk **webhooks** (`user.created` / `user.updated`) для фона без первого захода на `/account`.
+- [ ] Роли/права продавца на основе `users.role` + защита seller-эндпоинтов.
 - [ ] CRUD ассетов для продавца, загрузка файлов (S3/R2 presigned), worker (BullMQ).
 - [ ] Stripe Connect, чекаут, webhooks, выдача скачиваний.
 - [ ] Meilisearch в коде, админ-модерация, полноценный UI каталога/карточки, **Three.js** просмотр.
 - [ ] Mobile: только каркас Expo.
-- [ ] Тесты (Vitest/Playwright/Supertest), CI/CD — не настроены под монорепо.
+- [x] **Тесты**: Vitest + Supertest в `apps/api` (health, `/`, `/health.txt`, `/assets`, `/users/me` 401); Vitest + Zod в `packages/schema` (`PaginatedPublicAssetsSchema`). **SWC** в `vitest.config` API — `emitDecoratorMetadata` для Nest DI.
+- [x] **CI**: GitHub Actions `.github/workflows/ci.yml` — `pnpm install --frozen-lockfile`, `turbo test` (@repo/api, @repo/schema), `turbo type-check` (api, web, schema, sdk).
+- [ ] E2E Playwright (web), интеграционные тесты с реальной БД — по желанию.
 
 ---
 
 ## Ближайшие приоритеты (рекомендуемый порядок)
 
-1. **Auth**: Clerk + upsert пользователя в БД; защищённые эндпоинты; `GET /users/me`.
+1. **Auth (дальше)**: webhooks Clerk; `getMe` в `@repo/sdk`; настройки redirect URL в Clerk Dashboard под локальные `/sign-in`, `/sign-up`.
 2. **Ассеты (seller)**: создание черновика, presigned upload, смена статусов, модерация (минимум).
 3. **Stripe Connect** и покупка одной позиции (MVP).
 4. **Поиск**: индексация в Meilisearch, запрос из API и web.

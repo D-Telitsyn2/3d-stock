@@ -19,6 +19,7 @@ export class AppController {
 <li><a href="/health.txt">/health.txt</a> — plain text <code>ok</code></li>
 <li><a href="/api/docs">/api/docs</a> — Swagger</li>
 <li><a href="/assets">/assets</a> — каталог (JSON)</li>
+<li><code>GET /users/me</code> — профиль (Bearer Clerk JWT; см. Swagger)</li>
 </ul>
 </body></html>`;
   }

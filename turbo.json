@@ -29,7 +29,8 @@
       "dependsOn": ["^type-check"]
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": [],
+      "outputs": []
     },
     "clean": {
       "cache": false

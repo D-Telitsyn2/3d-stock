@@ -8,6 +8,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "type-check": "turbo type-check",
     "test": "turbo test",
+    "ci": "turbo run test type-check --filter=@repo/api --filter=@repo/schema --filter=@repo/web --filter=@repo/sdk",
     "clean": "turbo clean",
     "db:generate": "turbo db:generate",
     "db:migrate": "turbo db:migrate",

@@ -43,6 +43,8 @@ pnpm install
 cp .env.example apps/api/.env
 # Edit apps/api/.env — DATABASE_URL must match Postgres (see docker-compose)
 cp apps/web/.env.example apps/web/.env.local
+# В apps/web/.env.local укажи NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY и CLERK_SECRET_KEY (тот же инстанс, что и в apps/api/.env).
+# Clerk: пути входа задаются в **`.env.local`** (`NEXT_PUBLIC_CLERK_SIGN_IN_URL`, `NEXT_PUBLIC_CLERK_SIGN_UP_URL` — см. `apps/web/.env.example`). В Dashboard нет пункта «Allowed origins» с таким названием: смотри **[Paths](https://dashboard.clerk.com/~/paths)** (URL приложения, редиректы) и при необходимости **[Domains](https://dashboard.clerk.com/~/domains)**. Для **Development**-инстанса `http://localhost:3000` обычно уже допустим. Док: [Customize redirect URLs](https://clerk.com/docs/guides/development/customize-redirect-urls).
 ```
 
 4. Start PostgreSQL and run migrations:
@@ -77,7 +79,7 @@ pnpm start
 - `pnpm build` - Build all applications
 - `pnpm lint` - Lint all code
 - `pnpm type-check` - TypeScript type checking
-- `pnpm test` - Run all tests
+- `pnpm test` - Run all tests (`turbo test`: `@repo/api`, `@repo/schema`)
 - `pnpm clean` - Clean build artifacts
 
 ### Database Commands
@@ -125,9 +127,11 @@ Key services to configure:
 
 ## 🧪 Testing
 
-- **Unit Tests**: Vitest
-- **E2E Tests**: Playwright (web)
-- **API Tests**: Supertest with NestJS
+- **API** (`apps/api`): Vitest + Supertest; Nest DI через **unplugin-swc** (`vitest.config.ts`). Команды: `pnpm --filter @repo/api test`, `pnpm --filter @repo/api test:watch`.
+- **Schema** (`packages/schema`): Vitest + Zod (`pnpm --filter @repo/schema test`).
+- **Все тесты монорепо**: `pnpm test` (turbo).
+- **CI**: GitHub Actions [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — тесты + type-check (api, web, schema, sdk).
+- E2E Playwright — запланировано (см. `docs/PROJECT_STATE.md`).
 
 ## 🚀 Deployment
 

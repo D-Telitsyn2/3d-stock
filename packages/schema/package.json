@@ -8,12 +8,14 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint \"src/**/*.ts\" --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "zod": "^3.22.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^0.34.6"
   }
 }
