@@ -1,5 +1,19 @@
 {
-  "extends": "@repo/config/typescript/node.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["es6"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "outDir": "./dist"
+  },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

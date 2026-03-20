@@ -1,0 +1,11 @@
+---
+description: Next.js web и workspace-пакеты sdk/schema
+globs: apps/web/**/*.{tsx,ts}
+alwaysApply: false
+---
+
+# Web (`apps/web`)
+
+- App Router, серверные компоненты по умолчанию; для страниц, ходящих во внешний API при `next build`, учитывай **`dynamic = 'force-dynamic'`** или явный fetch без статической генерации, если API в момент сборки недоступен.
+- Общие типы и парсинг ответов API — **`@repo/schema`** (Zod); HTTP-клиент — **`@repo/sdk`** (`createApiClient`, и т.д.). Не дублируй контракты только в web.
+- `next.config.js`: `transpilePackages` уже включает `@repo/ui`, `@repo/sdk`, `@repo/schema` — при добавлении нового TS-пакета из `packages/*` допиши сюда при необходимости.

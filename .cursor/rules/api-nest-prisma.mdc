@@ -1,0 +1,12 @@
+---
+description: Конвенции NestJS API и Prisma в apps/api
+globs: apps/api/**/*.ts
+alwaysApply: false
+---
+
+# API (`apps/api`)
+
+- Новые доменные фичи — отдельный модуль: `*.module.ts`, controller, service, DTO с `class-validator`; регистрация в `AppModule`.
+- Prisma только через **`PrismaService`**; не инстанциируй `PrismaClient` в контроллерах.
+- Публичные ответы описывай DTO + `@ApiProperty` для Swagger; глобальный **`ValidationPipe`** уже в `main.ts`.
+- Миграции и сид: каталог `prisma/`; после смены схемы — миграция и `prisma generate`. `DATABASE_URL` — PostgreSQL (см. `docker-compose` и `.env.example`).

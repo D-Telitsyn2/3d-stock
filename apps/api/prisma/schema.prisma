@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -195,7 +195,7 @@ model WebhookEvent {
   id          String    @id @default(cuid())
   source      String // STRIPE, etc
   eventType   String
-  payload     String    // JSON as text for SQLite
+  payload     String    // JSON as text
   processedAt DateTime?
   createdAt   DateTime  @default(now())
 

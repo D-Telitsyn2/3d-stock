@@ -20,7 +20,7 @@ This is a monorepo built with Turborepo containing:
 ### Prerequisites
 
 - Node.js 18+
-- pnpm 8+
+- pnpm 9+ (pnpm 8.x may hit registry fetch errors on some setups; use `corepack prepare pnpm@9.15.4 --activate` or `npx pnpm@9 install`)
 - PostgreSQL database
 - Redis instance
 - Meilisearch instance
@@ -33,19 +33,21 @@ git clone <repository-url>
 cd 3d-stock
 ```
 
-2. Install dependencies:
+2. Install dependencies (use **pnpm only** — do not run `npm install` in packages; the repo uses a single `pnpm-lock.yaml`):
 ```bash
 pnpm install
 ```
 
 3. Setup environment variables:
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+cp .env.example apps/api/.env
+# Edit apps/api/.env — DATABASE_URL must match Postgres (see docker-compose)
+cp apps/web/.env.example apps/web/.env.local
 ```
 
-4. Setup database:
+4. Start PostgreSQL and run migrations:
 ```bash
+docker compose up -d postgres
 pnpm db:migrate
 pnpm db:seed
 ```
@@ -150,16 +152,11 @@ Key services to configure:
 ## 📚 Documentation
 
 - [API Documentation](http://localhost:3001/api/docs) (when running locally)
-- [Project Instructions](./PROJECT_INSTRUCTIONS.md)
+- [Project state & roadmap](./docs/PROJECT_STATE.md) (living doc — update in place)
 
 ## 🔄 Current Status
 
-🟡 **Phase 1**: Foundation & Infrastructure (IN PROGRESS)
-- [x] Monorepo setup
-- [x] Basic configurations
-- [x] Database schema
-- [ ] Basic API endpoints
-- [ ] Authentication integration
+See **[docs/PROJECT_STATE.md](./docs/PROJECT_STATE.md)** for what is implemented and what is next. Cursor rules for the AI agent live in `.cursor/rules/`.
 
 ## 📝 License
 
@@ -167,4 +164,4 @@ Private - All rights reserved
 
 ## 🤝 Contributing
 
-This is a private project. See PROJECT_INSTRUCTIONS.md for development guidelines.
+This is a private project. See [docs/PROJECT_STATE.md](./docs/PROJECT_STATE.md) and `.cursor/rules/`.

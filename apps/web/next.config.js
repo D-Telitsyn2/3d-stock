@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
-  transpilePackages: ['@repo/ui', '@repo/sdk'],
+  transpilePackages: ['@repo/ui', '@repo/sdk', '@repo/schema'],
   images: {
-    domains: ['images.clerk.dev'],
+    domains: [],
   },
 };
 
