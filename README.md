@@ -157,6 +157,7 @@ Key services to configure:
 
 - [API Documentation](http://localhost:3001/api/docs) (when running locally)
 - [Project state & roadmap](./docs/PROJECT_STATE.md) (living doc — update in place)
+- [Architecture diagrams](./docs/ARCHITECTURE.md) (Mermaid: monorepo, package graph, API modules, request flow, Prisma ER)
 
 ## 🔄 Current Status
 
